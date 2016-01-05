@@ -13,7 +13,7 @@ interface MessageInterface
 
     /**
      * Get date
-     * 
+     *
      * @return string
      */
     public function getDate();
