@@ -2,6 +2,7 @@
 
 namespace LaravelPM\Mappers\DoctrineORM;
 
+use LaravelPM\Mappers\UserMapperInterface;
 use LaravelPM\Models\UserInterface;
 
 class UserMapper implements UserMapperInterface
