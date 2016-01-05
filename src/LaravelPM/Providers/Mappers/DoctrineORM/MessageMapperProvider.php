@@ -7,6 +7,9 @@ use LaravelPM\Mappers\DoctrineORM\MessageMapper;
 
 class LaravelPMProvider extends ServiceProvider
 {
+    /**
+     * Register mapper
+     */
     public function register()
     {
         $this->app->bind(MessageMapper::class, function (Application $app) {
