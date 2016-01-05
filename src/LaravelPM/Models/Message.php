@@ -9,10 +9,20 @@ class Message implements MessageInterface
      */
     protected $id;
 
-    public function __construct()
-    {
+    /**
+     * @var string
+     */
+    protected $message;
 
-    }
+    /**
+     * @var \DateTime
+     */
+    protected $date;
+
+    /**
+     * @var string
+     */
+    protected $user;
 
     /**
      * @return string
@@ -28,5 +38,53 @@ class Message implements MessageInterface
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * @param string $message
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param \DateTime $date
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param string $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
     }
 }
