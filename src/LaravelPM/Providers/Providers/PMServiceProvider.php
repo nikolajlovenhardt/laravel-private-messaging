@@ -20,7 +20,7 @@ class PMServiceProvider extends ServiceProvider
             $mappers = $options->get('mappers');
 
             /** @var MessageMapperInterface $messageMapper */
-            $messageMapper = new $mappers['messageMapper'];
+            $messageMapper = $app->make($mappers['messageMapper']);
 
             return new PMService($messageMapper);
         });
