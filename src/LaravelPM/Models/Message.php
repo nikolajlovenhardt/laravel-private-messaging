@@ -25,6 +25,11 @@ class Message implements MessageInterface
     protected $user;
 
     /**
+     * @var int
+     */
+    protected $read;
+
+    /**
      * @return string
      */
     public function getId()
@@ -86,5 +91,21 @@ class Message implements MessageInterface
     public function setUser($user)
     {
         $this->user = $user;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRead()
+    {
+        return $this->read;
+    }
+
+    /**
+     * @param int $read
+     */
+    public function setRead($read)
+    {
+        $this->read = $read;
     }
 }

@@ -16,29 +16,22 @@
  * and is licensed under the MIT license.
  */
 
-namespace LaravelPM\Options;
+namespace LaravelPM\Exceptions;
 
-interface OptionsInterface
+class InvalidMapperException extends Exception
 {
-    public function __construct(array $options = []);
-
     /**
-     * @return array
+     * Invalid mapper
+     *
+     * @param string $class
+     * @param string $intendedClass
      */
-    public function getDefaults();
-
-    /**
-     * @param array $defaults
-     */
-    public function setDefaults(array $defaults);
-
-    /**
-     * @return array
-     */
-    public function getOptions();
-
-    /**
-     * @param array $options
-     */
-    public function setOptions(array $options);
+    public function __construct($class, $intendedClass)
+    {
+        parent::__construct(sprintf(
+            '%s must be an instance of %s',
+            get_class($class),
+            get_class($intendedClass)
+        ));
+    }
 }

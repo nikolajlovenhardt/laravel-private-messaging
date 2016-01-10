@@ -31,4 +31,11 @@ interface MessageInterface
      * @return string
      */
     public function getUser();
+
+    /**
+     * Get read status
+     *
+     * @return int
+     */
+    public function getRead();
 }

@@ -16,29 +16,15 @@
  * and is licensed under the MIT license.
  */
 
-namespace LaravelPM\Options;
+namespace LaravelPM\Exceptions;
 
-interface OptionsInterface
+class InvalidConfigurationException extends Exception
 {
-    public function __construct(array $options = []);
-
     /**
-     * @return array
+     * Invalid configuration
      */
-    public function getDefaults();
-
-    /**
-     * @param array $defaults
-     */
-    public function setDefaults(array $defaults);
-
-    /**
-     * @return array
-     */
-    public function getOptions();
-
-    /**
-     * @param array $options
-     */
-    public function setOptions(array $options);
+    public function __construct()
+    {
+        parent::__construct('Please provide a valid configuration');
+    }
 }

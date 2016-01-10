@@ -18,27 +18,10 @@
 
 namespace LaravelPM\Options;
 
-interface OptionsInterface
+class ModuleOptions extends Options
 {
-    public function __construct(array $options = []);
+    /** @var array */
+    protected $defaults = [
 
-    /**
-     * @return array
-     */
-    public function getDefaults();
-
-    /**
-     * @param array $defaults
-     */
-    public function setDefaults(array $defaults);
-
-    /**
-     * @return array
-     */
-    public function getOptions();
-
-    /**
-     * @param array $options
-     */
-    public function setOptions(array $options);
+    ];
 }

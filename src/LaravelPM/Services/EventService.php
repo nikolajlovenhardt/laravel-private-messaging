@@ -16,29 +16,20 @@
  * and is licensed under the MIT license.
  */
 
-namespace LaravelPM\Options;
+namespace LaravelPM\Services;
 
-interface OptionsInterface
+use Event;
+use stdClass;
+
+class EventService
 {
-    public function __construct(array $options = []);
-
     /**
-     * @return array
+     * @param stdClass|string $event
+     * @param array|string|stdClass|null $data
+     * @return boolean
      */
-    public function getDefaults();
-
-    /**
-     * @param array $defaults
-     */
-    public function setDefaults(array $defaults);
-
-    /**
-     * @return array
-     */
-    public function getOptions();
-
-    /**
-     * @param array $options
-     */
-    public function setOptions(array $options);
+    public function fire($event, $data = null)
+    {
+        return Event::fire($event, $data);
+    }
 }
