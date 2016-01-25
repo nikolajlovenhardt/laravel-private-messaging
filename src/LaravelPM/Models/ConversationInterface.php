@@ -2,19 +2,20 @@
 
 namespace LaravelPM\Models;
 
-interface UserInterface
+interface ConversationInterface
 {
     /**
-     * Get user id
-     *
      * @return string
      */
     public function getId();
 
     /**
-     * Get display name
-     *
      * @return string
      */
-    public function getDisplayName();
+    public function getSubject();
+
+    /**
+     * @return \DateTime
+     */
+    public function getDate();
 }

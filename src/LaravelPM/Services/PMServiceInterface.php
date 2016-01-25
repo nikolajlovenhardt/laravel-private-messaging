@@ -18,23 +18,12 @@
 
 namespace LaravelPM\Services;
 
-use LaravelPM\Mappers\MessageMapperInterface;
+use LaravelPM\Models\ConversationInterface;
 use LaravelPM\Models\MessageInterface;
 use LaravelPM\Models\UserInterface;
 
-class PMService implements PMServiceInterface
+interface PMServiceInterface
 {
-    /** @var EventService */
-    protected $eventService;
-
-    /** @var MessageMapperInterface */
-    protected $messageMapper;
-
-    public function __construct(EventService $eventService, MessageMapperInterface $messageMapper)
-    {
-        $this->eventService = $eventService;
-        $this->messageMapper = $messageMapper;
-    }
 
     /**
      * Find message
@@ -42,10 +31,14 @@ class PMService implements PMServiceInterface
      * @param string $id
      * @return MessageInterface|null
      */
-    public function find($id)
-    {
-        return $this->messageMapper->find($id);
-    }
+    public function find($id);
+
+    /**
+     * Send message
+     *
+     * @param MessageInterface $message
+     */
+    public function send(MessageInterface $message);
 
     /**
      * Get user conversations
@@ -53,18 +46,5 @@ class PMService implements PMServiceInterface
      * @param UserInterface $user
      * @return array|\LaravelPM\Models\ConversationInterface[]
      */
-    public function getUserConversations(UserInterface $user)
-    {
-        return $this->messageMapper->getUserConversations($user);
-    }
-
-    /**
-     * Send message
-     *
-     * @param MessageInterface $message
-     */
-    public function send(MessageInterface $message)
-    {
-        $this->messageMapper->save($message);
-    }
+    public function getUserConversations(UserInterface $user);
 }

@@ -2,7 +2,9 @@
 
 namespace LaravelPM\Mappers;
 
+use LaravelPM\Models\ConversationInterface;
 use LaravelPM\Models\MessageInterface;
+use LaravelPM\Models\UserInterface;
 
 interface MessageMapperInterface
 {
@@ -29,4 +31,12 @@ interface MessageMapperInterface
      * @return boolean
      */
     public function remove(MessageInterface $message);
+
+    /**
+     * Get user conversations
+     *
+     * @param UserInterface $user
+     * @return ConversationInterface[]|array
+     */
+    public function getUserConversations(UserInterface $user);
 }
