@@ -42,6 +42,15 @@ class LaravelPMProvider extends ServiceProvider
             __DIR__ . '/../../config/config.php' => config_path('private-messaging.php'),
         ], 'config');
 
+        $this->publishes([
+            __DIR__ . '/../../resources/views' => resource_path('views/vendor/pm'),
+        ], 'views');
+
+        $this->loadViewsFrom(
+            __DIR__ . '/../../resources/views',
+            'pm'
+        );
+
         // Routes
         if (! $this->app->routesAreCached()) {
             require __DIR__ . '/Http/routes.php';
@@ -114,10 +123,7 @@ class LaravelPMProvider extends ServiceProvider
             /** @var EventService $eventService */
             $eventService = $app->make(EventService::class);
 
-            /** @var UserInterface $user */
-            $user = $moduleOptions->get('user');
-
-            return new PMService($user, $eventService, $messageMapper);
+            return new PMService($eventService, $messageMapper);
         });
 
         // Doctrine mappers

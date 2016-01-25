@@ -8,6 +8,8 @@
         <id name="id" type="string" length="36" column="id">
             <generator strategy="NONE" />
         </id>
+        <field name="to" type="string" length="255" />
+        <field name="author" type="string" length="255" />
         <field name="subject" type="string" length="255" />
         <field name="date" type="datetime"/>
     </entity>

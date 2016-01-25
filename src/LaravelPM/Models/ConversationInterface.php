@@ -18,4 +18,14 @@ interface ConversationInterface
      * @return \DateTime
      */
     public function getDate();
+
+    /**
+     * @return string
+     */
+    public function getTo();
+
+    /**
+     * @return string
+     */
+    public function getAuthor();
 }

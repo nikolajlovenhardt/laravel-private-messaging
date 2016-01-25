@@ -22,6 +22,11 @@ class Message implements MessageInterface
     /**
      * @var string
      */
+    protected $conversation;
+
+    /**
+     * @var string
+     */
     protected $user;
 
     /**
@@ -107,5 +112,21 @@ class Message implements MessageInterface
     public function setRead($read)
     {
         $this->read = $read;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConversation()
+    {
+        return $this->conversation;
+    }
+
+    /**
+     * @param string $conversation
+     */
+    public function setConversation($conversation)
+    {
+        $this->conversation = $conversation;
     }
 }

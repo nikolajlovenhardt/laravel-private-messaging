@@ -38,4 +38,11 @@ interface MessageInterface
      * @return int
      */
     public function getRead();
+
+    /**
+     * Get conversation id
+     *
+     * @return string
+     */
+    public function getConversation();
 }

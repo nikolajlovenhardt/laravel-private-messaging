@@ -12,6 +12,16 @@ class Conversation implements ConversationInterface
     /**
      * @var string
      */
+    protected $to;
+
+    /**
+     * @var string
+     */
+    protected $author;
+
+    /**
+     * @var string
+     */
     protected $subject;
 
     /**
@@ -65,5 +75,37 @@ class Conversation implements ConversationInterface
     public function setDate($date)
     {
         $this->date = $date;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTo()
+    {
+        return $this->to;
+    }
+
+    /**
+     * @param string $to
+     */
+    public function setTo($to)
+    {
+        $this->to = $to;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param string $author
+     */
+    public function setAuthor($author)
+    {
+        $this->author = $author;
     }
 }

@@ -42,7 +42,7 @@ class PMController extends BaseController
             throw new InvalidMessageException($id);
         }
 
-        return view('pm.read', [
+        return view('pm::read', [
             'message' => $message,
         ]);
     }
@@ -59,7 +59,7 @@ class PMController extends BaseController
 
         $conversations = $pmService->getUserConversations($user);
 
-        return view('pm.inbox', [
+        return view('pm::inbox', [
             'conversations' => $conversations,
         ]);
     }

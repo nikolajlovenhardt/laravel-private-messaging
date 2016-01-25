@@ -67,9 +67,18 @@ class MessageMapper implements MessageMapperInterface
      */
     public function getUserConversations(UserInterface $user)
     {
-        return $this->objectManager->getRepository(Conversation::class)->findBy([
-            'user' => $user,
-        ]);
+        $queryBuilder = $this->objectManager->createQueryBuilder();
+
+        $queryBuilder->select('c')
+            ->from(Conversation::class, 'c')
+            ->where('c.to = :userId')
+            ->orWhere('c.author = :userId')
+            ->orderBy('c.date', 'DESC')
+            ->setParameter('userId', $user->getId());
+
+        $query = $queryBuilder->getQuery();
+
+        return $query->getResult();
     }
 
     /**

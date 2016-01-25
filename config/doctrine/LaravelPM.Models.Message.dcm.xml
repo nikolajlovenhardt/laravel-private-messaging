@@ -10,6 +10,7 @@
         </id>
         <field name="message" type="text" />
         <field name="date" type="datetime"/>
+        <field name="conversation" type="string" length="255" />
         <field name="user" type="string" length="255" />
         <field name="read" type="integer" length="2" />
     </entity>
