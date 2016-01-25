@@ -3,8 +3,10 @@
 namespace LaravelPM\Http\Controllers;
 
 use Auth;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use LaravelPM\Exceptions\InvalidMessageException;
+use LaravelPM\Models\Conversation;
 use LaravelPM\Models\UserInterface;
 use LaravelPM\Services\PMServiceInterface;
 
@@ -62,9 +64,35 @@ class PMController extends BaseController
         ]);
     }
 
-    public function compose()
+    /**
+     * Compose new conversation
+     * 
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function compose(Request $request)
     {
+        $view = view('pm.compose');
+        $pmService = $this->pmService;
 
+        if (!$request->isMethod('post')) {
+            return $view;
+        }
+
+        $data = $request->all();
+
+        if ($request->has(['subject', 'message'])) {
+            return $view;
+        }
+
+        $conversation = new Conversation();
+        $conversation->setSubject($data['subject']);
+
+        if (!$pmService->compose($conversation)) {
+            return $view;
+        }
+
+        // Success
     }
 
     /**

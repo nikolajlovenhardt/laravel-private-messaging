@@ -71,4 +71,16 @@ class MessageMapper implements MessageMapperInterface
             'user' => $user,
         ]);
     }
+
+    /**
+     * Compose new conversation
+     *
+     * @param ConversationInterface $conversationInterface
+     * @return ConversationInterface
+     */
+    public function compose(ConversationInterface $conversationInterface)
+    {
+        $this->objectManager->persist($conversationInterface);
+        return $conversationInterface;
+    }
 }

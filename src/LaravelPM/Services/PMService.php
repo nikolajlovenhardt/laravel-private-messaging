@@ -19,6 +19,7 @@
 namespace LaravelPM\Services;
 
 use LaravelPM\Mappers\MessageMapperInterface;
+use LaravelPM\Models\ConversationInterface;
 use LaravelPM\Models\MessageInterface;
 use LaravelPM\Models\UserInterface;
 
@@ -66,5 +67,20 @@ class PMService implements PMServiceInterface
     public function send(MessageInterface $message)
     {
         $this->messageMapper->save($message);
+    }
+
+    /**
+     * Compose new conversation
+     *
+     * @param ConversationInterface $conversation
+     * @return bool|ConversationInterface
+     */
+    public function compose(ConversationInterface $conversation)
+    {
+        if (!$conversation = $this->messageMapper->compose($conversation)) {
+            return false;
+        }
+
+        return $conversation;
     }
 }

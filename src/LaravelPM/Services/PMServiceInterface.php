@@ -47,4 +47,12 @@ interface PMServiceInterface
      * @return array|\LaravelPM\Models\ConversationInterface[]
      */
     public function getUserConversations(UserInterface $user);
+
+    /**
+     * Compose new conversation
+     *
+     * @param ConversationInterface $conversation
+     * @return ConversationInterface|boolean
+     */
+    public function compose(ConversationInterface $conversation);
 }

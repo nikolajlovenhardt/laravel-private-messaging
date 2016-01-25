@@ -39,4 +39,12 @@ interface MessageMapperInterface
      * @return ConversationInterface[]|array
      */
     public function getUserConversations(UserInterface $user);
+
+    /**
+     * Compose new conversation
+     *
+     * @param ConversationInterface $conversation
+     * @return ConversationInterface|boolean
+     */
+    public function compose(ConversationInterface $conversation);
 }
