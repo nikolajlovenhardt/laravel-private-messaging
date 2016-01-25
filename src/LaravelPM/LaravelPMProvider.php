@@ -18,11 +18,15 @@
 
 namespace LaravelPM;
 
-use LaravelPM\Exceptions\InvalidConfigurationException;
+use LaravelPM\Exceptions\InvalidMapperException;
 use LaravelPM\Mappers;
-use LaravelPM\Services\EventService;
+use LaravelPM\Mappers\MessageMapperInterface;
+use LaravelPM\Options\ModuleOptions;
 use LaravelPM\Services\PMService;
+use LaravelPM\Services\EventService;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
+use LaravelPM\Exceptions\InvalidConfigurationException;
 
 class LaravelPMProvider extends ServiceProvider
 {
@@ -34,6 +38,11 @@ class LaravelPMProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../../config/config.php' => config_path('user-notifications.php'),
         ], 'config');
+
+        // Routes
+        if (! $this->app->routesAreCached()) {
+            require __DIR__ . 'Http/routes.php';
+        }
     }
 
     /**
@@ -43,6 +52,7 @@ class LaravelPMProvider extends ServiceProvider
     {
         $this->mergeConfig();
 
+        // Laravel-doctrine support
         if (class_exists('\Doctrine\ORM\EntityManager')) {
             /** @var \Doctrine\ORM\EntityManager $entityManager */
             $entityManager = app('Doctrine\ORM\EntityManager');
@@ -69,6 +79,9 @@ class LaravelPMProvider extends ServiceProvider
         );
     }
 
+    /**
+     * Register services
+     */
     protected function registerServices()
     {
         // Notification service
@@ -80,17 +93,17 @@ class LaravelPMProvider extends ServiceProvider
             $moduleOptions = new ModuleOptions($config);
             $mappers = $moduleOptions->get('mappers');
 
-            /** @var NotificationMapperInterface|null $notificationMapper */
-            $notificationMapper = $app->make($mappers['notificationMapper']);
+            /** @var MessageMapperInterface|null $messageMapper */
+            $messageMapper = $app->make($mappers['messageMapper']);
 
-            if (!$notificationMapper instanceof NotificationMapperInterface) {
-                throw new InvalidMapperException($notificationMapper, NotificationMapperInterface::class);
+            if (!$messageMapper instanceof MessageMapperInterface) {
+                throw new InvalidMapperException($messageMapper, MessageMapperInterface::class);
             }
 
             /** @var EventService $eventService */
             $eventService = $app->make(EventService::class);
 
-            return new PMService($eventService, $notificationMapper);
+            return new PMService($eventService, $messageMapper);
         });
 
         // Doctrine mappers
