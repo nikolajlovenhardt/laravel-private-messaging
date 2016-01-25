@@ -28,6 +28,10 @@ class InvalidMapperException extends Exception
      */
     public function __construct($class, $intendedClass)
     {
+        if (is_null($class)) {
+            return parent::__construct('Please provide a valid mapper');
+        }
+
         parent::__construct(sprintf(
             '%s must be an instance of %s',
             get_class($class),

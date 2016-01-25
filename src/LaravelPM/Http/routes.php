@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['prefix' => 'pm', 'as' => 'pm.'], function () {
+Route::group(['prefix' => 'pm', 'as' => 'pm.', 'middleware' => 'web'], function () {
     // Inbox
     Route::get('/inbox', ['as' => 'inbox', 'uses' => 'LaravelPM\Http\Controllers\PMController@inbox']);
 

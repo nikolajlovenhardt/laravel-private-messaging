@@ -19,6 +19,7 @@
 namespace LaravelPM;
 
 use LaravelPM\Exceptions\InvalidMapperException;
+use LaravelPM\Http\Controllers\PMController;
 use LaravelPM\Mappers;
 use LaravelPM\Mappers\MessageMapperInterface;
 use LaravelPM\Options\ModuleOptions;
@@ -27,6 +28,8 @@ use LaravelPM\Services\EventService;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use LaravelPM\Exceptions\InvalidConfigurationException;
+use LaravelPM\Services\PMServiceInterface;
+use LaravelUserNotifications\Models\UserInterface;
 
 class LaravelPMProvider extends ServiceProvider
 {
@@ -36,12 +39,12 @@ class LaravelPMProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../../config/config.php' => config_path('user-notifications.php'),
+            __DIR__ . '/../../config/config.php' => config_path('private-messaging.php'),
         ], 'config');
 
         // Routes
         if (! $this->app->routesAreCached()) {
-            require __DIR__ . 'Http/routes.php';
+            require __DIR__ . '/Http/routes.php';
         }
     }
 
@@ -66,6 +69,9 @@ class LaravelPMProvider extends ServiceProvider
 
         // Register services
         $this->registerServices();
+
+        // Register services
+        $this->registerControllers();
     }
 
     /**
@@ -86,12 +92,17 @@ class LaravelPMProvider extends ServiceProvider
     {
         // Notification service
         $this->app->bind(PMService::class, function (Application $app) {
-            if (!$config = config('user-notifications')) {
+            if (!$config = config('private-messaging')) {
                 throw new InvalidConfigurationException();
             }
 
             $moduleOptions = new ModuleOptions($config);
             $mappers = $moduleOptions->get('mappers');
+
+            // No message mapper
+            if (!isset($mappers['messageMapper'])) {
+                throw new InvalidMapperException(null, MessageMapperInterface::class);
+            }
 
             /** @var MessageMapperInterface|null $messageMapper */
             $messageMapper = $app->make($mappers['messageMapper']);
@@ -103,7 +114,10 @@ class LaravelPMProvider extends ServiceProvider
             /** @var EventService $eventService */
             $eventService = $app->make(EventService::class);
 
-            return new PMService($eventService, $messageMapper);
+            /** @var UserInterface $user */
+            $user = $moduleOptions->get('user');
+
+            return new PMService($user, $eventService, $messageMapper);
         });
 
         // Doctrine mappers
@@ -115,6 +129,19 @@ class LaravelPMProvider extends ServiceProvider
         $this->app->bind(Mappers\DoctrineORM\UserMapper::class, function (Application $app) {
             $objectManager = $app->make('Doctrine\ORM\EntityManager');
             return new Mappers\DoctrineORM\UserMapper($objectManager);
+        });
+    }
+
+    /**
+     * Register controllers
+     */
+    protected function registerControllers()
+    {
+        $this->app->bind(PMController::class, function (Application $app) {
+            /** @var PMServiceInterface $pmService */
+            $pmService = $app->make(PMService::class);
+
+            return new PMController($pmService);
         });
     }
 }

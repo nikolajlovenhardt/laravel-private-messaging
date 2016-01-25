@@ -96,8 +96,6 @@ class PMController extends BaseController
     }
 
     /**
-     * Get identity
-     *
      * @return UserInterface|null
      */
     protected function getIdentity()

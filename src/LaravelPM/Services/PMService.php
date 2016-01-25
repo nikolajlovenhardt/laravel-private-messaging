@@ -31,8 +31,9 @@ class PMService implements PMServiceInterface
     /** @var MessageMapperInterface */
     protected $messageMapper;
 
-    public function __construct(EventService $eventService, MessageMapperInterface $messageMapper)
+    public function __construct(UserInterface $identity, EventService $eventService, MessageMapperInterface $messageMapper)
     {
+        $this->identity = $identity;
         $this->eventService = $eventService;
         $this->messageMapper = $messageMapper;
     }
