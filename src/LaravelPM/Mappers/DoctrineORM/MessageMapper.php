@@ -2,15 +2,20 @@
 
 namespace LaravelPM\Mappers\DoctrineORM;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use LaravelPM\Mappers\MessageMapperInterface;
+use LaravelPM\Models\Conversation;
+use LaravelPM\Models\ConversationInterface;
 use LaravelPM\Models\Message;
 use LaravelPM\Models\MessageInterface;
+use LaravelPM\Models\UserInterface;
 
 class MessageMapper implements MessageMapperInterface
 {
+    /** @var ObjectManager */
     protected $objectManager;
 
-    public function __construct($objectManager)
+    public function __construct(ObjectManager $objectManager)
     {
         $this->objectManager = $objectManager;
     }
@@ -26,7 +31,7 @@ class MessageMapper implements MessageMapperInterface
         return $this->objectManager->find(Message::class, $id);
     }
 
-    /**ActivityServiceProvider.php
+    /**
      * Save message
      *
      * @param MessageInterface $message
@@ -52,5 +57,18 @@ class MessageMapper implements MessageMapperInterface
         $this->objectManager->flush();
 
         return true;
+    }
+
+    /**
+     * Find user conversations
+     *
+     * @param UserInterface $user
+     * @return ConversationInterface[]|array
+     */
+    public function getUserConversations(UserInterface $user)
+    {
+        return $this->objectManager->getRepository(Conversation::class)->findBy([
+            'user' => $user,
+        ]);
     }
 }
