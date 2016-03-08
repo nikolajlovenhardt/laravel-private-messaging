@@ -33,6 +33,15 @@ interface PMServiceInterface
     public function find($id);
 
     /**
+     * Reply to conversation
+     *
+     * @param array $data
+     * @param ConversationInterface $conversation
+     * @return MessageInterface|boolean
+     */
+    public function reply(array $data, ConversationInterface $conversation);
+
+    /**
      * Send message
      *
      * @param MessageInterface $message

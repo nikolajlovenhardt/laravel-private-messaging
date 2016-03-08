@@ -10,6 +10,7 @@ use LaravelPM\Exceptions\InvalidMessageException;
 use LaravelPM\Models\Conversation;
 use LaravelPM\Models\UserInterface;
 use LaravelPM\Services\PMServiceInterface;
+use PM;
 
 class PMController extends BaseController
 {
@@ -99,6 +100,35 @@ class PMController extends BaseController
 
         if (!$conversation = $pmService->compose($request->all())) {
             return $view;
+        }
+
+        return redirect()->route('pm.conversation', [
+            'id' => $conversation->getId(),
+        ]);
+    }
+
+    /**
+     * Reply to conversation
+     *
+     * @param Request $request
+     * @param string $conversationId
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function reply(Request $request, $conversationId)
+    {
+        $pmService = $this->pmService;
+        $badRequest = redirect()->route('pm.inbox');
+
+        if (!$conversation = $pmService->find($conversationId)) {
+            return $badRequest;
+        }
+
+        if (!$pmService->isParticipant($conversation, PM::currentUser())) {
+            return $badRequest;
+        }
+
+        if (!$pmService->reply($request->all(), $conversation)) {
+            return $badRequest;
         }
 
         return redirect()->route('pm.conversation', [

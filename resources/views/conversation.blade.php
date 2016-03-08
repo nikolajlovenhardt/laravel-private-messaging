@@ -10,3 +10,5 @@
     {{$message->getMessage()}}
     <hr />
 @endforeach
+
+@include('pm::reply', ['conversation' => $conversation])

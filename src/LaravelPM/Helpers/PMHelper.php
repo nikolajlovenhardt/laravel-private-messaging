@@ -3,11 +3,11 @@
 namespace LaravelPM\Helpers;
 
 use LaravelPM\Mappers\UserMapperInterface;
-use LaravelUserNotifications\Models\UserInterface;
+use LaravelPM\Models\UserInterface;
 
 class PMHelper
 {
-    /** @var UserMapper */
+    /** @var UserMapperInterface */
     protected $userMapper;
 
     public function __construct(UserMapperInterface $userMapper)

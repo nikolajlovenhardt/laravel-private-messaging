@@ -5,9 +5,11 @@
 
     <label for="subject">
         {{_('To:')}}<br />
-        <select name="to" multiple="multiple">
+        <select name="participants[]" multiple="multiple" required="required">
             @foreach($users as $user)
-                <option value="{{$user->getId()}}">{{$user->getDisplayName()}}</option>
+                @if($user != PM::currentUser())
+                    <option value="{{$user->getId()}}">{{$user->getDisplayName()}}</option>
+                @endif
             @endforeach
         </select>
     </label>
@@ -16,14 +18,14 @@
 
     <label for="subject">
         {{_('Subject:')}}<br />
-        <input type="text" id="subject" name="subject" value="{{old('subject')}}" />
+        <input type="text" id="subject" name="subject" value="{{old('subject')}}" required="required" />
     </label>
 
     <br />
 
-    <label for="subject">
+    <label for="message">
         {{_('Message:')}}<br />
-        <textarea name="message">{{old('message')}}</textarea>
+        <textarea name="message" required="required">{{old('message')}}</textarea>
     </label>
 
     <br />

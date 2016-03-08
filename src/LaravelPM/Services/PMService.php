@@ -82,6 +82,29 @@ class PMService implements PMServiceInterface
     }
 
     /**
+     * Reply to conversation
+     *
+     * @param array $data
+     * @param ConversationInterface $conversation
+     * @return bool|MessageInterface
+     */
+    public function reply(array $data, ConversationInterface $conversation)
+    {
+        /** @var UserInterface $identity */
+        $identity = PM::currentUser();
+
+        if (!$this->isParticipant($conversation, $identity)) {
+            return false;
+        }
+
+        if (!isset($data['message']) || empty($data['message'])) {
+            return false;
+        }
+
+        return $this->messageMapper->create($data['message'], $identity, $conversation);
+    }
+
+    /**
      * Find all users
      *
      * @return UserInterface[]
