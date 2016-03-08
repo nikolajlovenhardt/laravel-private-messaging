@@ -3,18 +3,11 @@
 ## Installation
 - Install using composer `$ composer require nikolajlovenhardt/laravel-private-messaging`
 
-- Add provider
-```php
-'providers' => [
-    LaravelPM\LaravelPMProvider::class,
-],
-```
+## Support
 
-- Add facade
-```php
-'providers' => [
-    'PM' => LaravelPM\Facades\Helpers\PMHelperFacade::class,
-],
-```
+| DoctrineORM   | *supported*   |
+| Eloquent      | not yet       |
 
-- Run `$ php artisan vendor:publish` to publish the configuration file `config/private-messaging.php`
+## No documentation yet
+
+Continue to [*ØGetting started*](docs/01 Getting started.md)
