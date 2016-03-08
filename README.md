@@ -5,8 +5,10 @@
 
 ## Support
 
-| DoctrineORM   | *supported*   |
-| Eloquent      | not yet       |
+| ORM         | Supported
+| ------------|-------------|
+| DoctrineORM | *yes* |
+| Eloquent    | not yet     |
 
 ## No documentation yet
 
