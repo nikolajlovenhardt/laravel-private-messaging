@@ -5,6 +5,7 @@ namespace LaravelPM\Http\Controllers;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use LaravelPM\Exceptions\InvalidConversationException;
 use LaravelPM\Exceptions\InvalidMessageException;
 use LaravelPM\Models\Conversation;
 use LaravelPM\Models\UserInterface;
@@ -34,16 +35,16 @@ class PMController extends BaseController
         /** @var UserInterface|null $user */
         $user = $this->getIdentity();
 
-        if (!$message = $pmService->find($id)) {
-            throw new InvalidMessageException($id);
+        if (!$conversation = $pmService->find($id)) {
+            throw new InvalidConversationException($id);
         }
 
-        if (!$user || $message->getUser() !== $user->getId()) {
-            throw new InvalidMessageException($id);
+        if (!$user || !$pmService->isParticipant($conversation, $user)) {
+            throw new InvalidConversationException($id);
         }
 
         return view('pm::read', [
-            'message' => $message,
+            'conversation' => $conversation,
         ]);
     }
 

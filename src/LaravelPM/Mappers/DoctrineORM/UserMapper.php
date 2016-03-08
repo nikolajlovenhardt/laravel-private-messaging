@@ -2,19 +2,21 @@
 
 namespace LaravelPM\Mappers\DoctrineORM;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use LaravelPM\Mappers\UserMapperInterface;
 use LaravelPM\Models\UserInterface;
 
 class UserMapper implements UserMapperInterface
 {
+    /** @var ObjectManager */
     protected $objectManager;
 
-    /** @var UserInterface */
     protected $userModel;
 
-    public function __construct($objectManager)
+    public function __construct($objectManager, $userModel)
     {
         $this->objectManager = $objectManager;
+        $this->userModel = $userModel;
     }
 
     /**

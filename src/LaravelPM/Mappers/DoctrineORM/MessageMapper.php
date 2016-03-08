@@ -3,21 +3,36 @@
 namespace LaravelPM\Mappers\DoctrineORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
 use LaravelPM\Mappers\MessageMapperInterface;
 use LaravelPM\Models\Conversation;
 use LaravelPM\Models\ConversationInterface;
 use LaravelPM\Models\Message;
 use LaravelPM\Models\MessageInterface;
+use LaravelPM\Models\ParticipantInterface;
 use LaravelPM\Models\UserInterface;
 
 class MessageMapper implements MessageMapperInterface
 {
-    /** @var ObjectManager */
+    /** @var EntityManager */
     protected $objectManager;
 
-    public function __construct(ObjectManager $objectManager)
+    /** @var string */
+    protected $messageModel;
+
+    /** @var string */
+    protected $conversationModel;
+
+    /** @var string */
+    protected $participantModel;
+
+    public function __construct(ObjectManager $objectManager, $messageModel, $conversationModel, $participantModel)
     {
         $this->objectManager = $objectManager;
+
+        $this->messageModel = $messageModel;
+        $this->conversationModel = $conversationModel;
+        $this->participantModel = $participantModel;
     }
 
     /**
@@ -28,7 +43,7 @@ class MessageMapper implements MessageMapperInterface
      */
     public function find($id)
     {
-        return $this->objectManager->find(Message::class, $id);
+        return $this->objectManager->find($this->messageModel, $id);
     }
 
     /**
@@ -60,25 +75,36 @@ class MessageMapper implements MessageMapperInterface
     }
 
     /**
-     * Find user conversations
+     * Find user conversation
      *
      * @param UserInterface $user
-     * @return ConversationInterface[]|array
+     * @return array|\LaravelPM\Models\ParticipantInterface[]
      */
     public function getUserConversations(UserInterface $user)
     {
-        $queryBuilder = $this->objectManager->createQueryBuilder();
+        $query = $this->objectManager->createQuery(sprintf(
+            'select
+              p
+            from
+              %s p
+            where
+              p.user = :userId',
+            $this->participantModel
+            ));
 
-        $queryBuilder->select('c')
-            ->from(Conversation::class, 'c')
-            ->where('c.to = :userId')
-            ->orWhere('c.author = :userId')
-            ->orderBy('c.date', 'DESC')
-            ->setParameter('userId', $user->getId());
+        $query->setParameter('userId', $user->getId());
 
-        $query = $queryBuilder->getQuery();
+        /** @var ParticipantInterface[]|array $participantLinks */
+        $participantLinks = $query->getResult();
 
-        return $query->getResult();
+        /** @var ConversationInterface $conversations */
+        $conversations = [];
+
+        foreach ($participantLinks as $participantLink) {
+            $conversations[] = $participantLink->getConversation();
+        }
+
+        return $conversations;
     }
 
     /**

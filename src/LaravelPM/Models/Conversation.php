@@ -10,19 +10,24 @@ class Conversation implements ConversationInterface
     protected $id;
 
     /**
-     * @var string
+     * @var ParticipantInterface[]|array
      */
-    protected $to;
+    protected $participants;
 
     /**
-     * @var string
+     * @var MessageInterface[]|array
      */
-    protected $author;
+    protected $messages;
 
     /**
      * @var string
      */
     protected $subject;
+
+    /**
+     * @var \DateTime
+     */
+    protected $updated;
 
     /**
      * @var \DateTime
@@ -64,6 +69,22 @@ class Conversation implements ConversationInterface
     /**
      * @return \DateTime
      */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * @param \DateTime $updated
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+    }
+
+    /**
+     * @return \DateTime
+     */
     public function getDate()
     {
         return $this->date;
@@ -78,34 +99,34 @@ class Conversation implements ConversationInterface
     }
 
     /**
-     * @return string
+     * @return array|ParticipantInterface[]
      */
-    public function getTo()
+    public function getParticipants()
     {
-        return $this->to;
+        return $this->participants;
     }
 
     /**
-     * @param string $to
+     * @param array|ParticipantInterface[] $participants
      */
-    public function setTo($to)
+    public function setParticipants($participants)
     {
-        $this->to = $to;
+        $this->participants = $participants;
     }
 
     /**
-     * @return string
+     * @return array|MessageInterface[]
      */
-    public function getAuthor()
+    public function getMessages()
     {
-        return $this->author;
+        return $this->messages;
     }
 
     /**
-     * @param string $author
+     * @param array|MessageInterface[] $messages
      */
-    public function setAuthor($author)
+    public function setMessages($messages)
     {
-        $this->author = $author;
+        $this->messages = $messages;
     }
 }

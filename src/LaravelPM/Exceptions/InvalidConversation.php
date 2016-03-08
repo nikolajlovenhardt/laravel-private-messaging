@@ -16,42 +16,22 @@
  * and is licensed under the MIT license.
  */
 
-namespace LaravelPM\Services;
+namespace LaravelPM\Exceptions;
 
-use LaravelPM\Models\ConversationInterface;
-use LaravelPM\Models\MessageInterface;
-use LaravelPM\Models\UserInterface;
-
-interface PMServiceInterface
+class InvalidConversationException extends Exception
 {
     /**
-     * Find conversation
+     * Invalid conversation
      *
      * @param string $id
-     * @return ConversationInterface|null
      */
-    public function find($id);
-
-    /**
-     * Send message
-     *
-     * @param MessageInterface $message
-     */
-    public function send(MessageInterface $message);
-
-    /**
-     * Get user conversations
-     *
-     * @param UserInterface $user
-     * @return array|\LaravelPM\Models\ConversationInterface[]
-     */
-    public function getUserConversations(UserInterface $user);
-
-    /**
-     * Compose new conversation
-     *
-     * @param ConversationInterface $conversation
-     * @return ConversationInterface|boolean
-     */
-    public function compose(ConversationInterface $conversation);
+    public function __construct($id)
+    {
+        parent::__construct(
+            sprintf(
+                'Conversation with ID #%s was not found',
+                $id
+            )
+        );
+    }
 }

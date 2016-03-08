@@ -17,15 +17,15 @@ interface ConversationInterface
     /**
      * @return \DateTime
      */
+    public function getUpdated();
+
+    /**
+     * @return \DateTime
+     */
     public function getDate();
 
     /**
-     * @return string
+     * @return Participant[]|array
      */
-    public function getTo();
-
-    /**
-     * @return string
-     */
-    public function getAuthor();
+    public function getParticipants();
 }

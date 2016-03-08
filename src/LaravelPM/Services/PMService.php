@@ -18,6 +18,7 @@
 
 namespace LaravelPM\Services;
 
+use LaravelPM\Mappers\ConversationMapperInterface;
 use LaravelPM\Mappers\MessageMapperInterface;
 use LaravelPM\Models\ConversationInterface;
 use LaravelPM\Models\MessageInterface;
@@ -31,21 +32,46 @@ class PMService implements PMServiceInterface
     /** @var MessageMapperInterface */
     protected $messageMapper;
 
-    public function __construct(EventService $eventService, MessageMapperInterface $messageMapper)
-    {
+    /** @var ConversationMapperInterface */
+    protected $conversationMapper;
+
+    public function __construct(
+        EventService $eventService,
+        MessageMapperInterface $messageMapper,
+        ConversationMapperInterface $conversationMapper
+    ) {
         $this->eventService = $eventService;
         $this->messageMapper = $messageMapper;
+        $this->conversationMapper = $conversationMapper;
     }
 
     /**
-     * Find message
+     * Find conversation
      *
      * @param string $id
-     * @return MessageInterface|null
+     * @return ConversationInterface|null
      */
     public function find($id)
     {
-        return $this->messageMapper->find($id);
+        return $this->conversationMapper->find($id);
+    }
+
+    /**
+     * Check if user is participant to a conversation
+     *
+     * @param ConversationInterface $conversation
+     * @param UserInterface $user
+     * @return bool
+     */
+    public function isParticipant(ConversationInterface $conversation, UserInterface $user)
+    {
+        foreach ($conversation->getParticipants() as $participant) {
+            if ($participant->getUser() === $user->getId()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

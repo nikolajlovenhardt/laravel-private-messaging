@@ -19,9 +19,12 @@
 namespace LaravelPM;
 
 use LaravelPM\Exceptions\InvalidMapperException;
+use LaravelPM\Helpers\PMHelper;
 use LaravelPM\Http\Controllers\PMController;
 use LaravelPM\Mappers;
+use LaravelPM\Mappers\ConversationMapperInterface;
 use LaravelPM\Mappers\MessageMapperInterface;
+use LaravelPM\Mappers\UserMapperInterface;
 use LaravelPM\Options\ModuleOptions;
 use LaravelPM\Services\PMService;
 use LaravelPM\Services\EventService;
@@ -99,13 +102,9 @@ class LaravelPMProvider extends ServiceProvider
      */
     protected function registerServices()
     {
-        // Notification service
+        // PM service
         $this->app->bind(PMService::class, function (Application $app) {
-            if (!$config = config('private-messaging')) {
-                throw new InvalidConfigurationException();
-            }
-
-            $moduleOptions = new ModuleOptions($config);
+            $moduleOptions = $this->getModuleConfig();
             $mappers = $moduleOptions->get('mappers');
 
             // No message mapper
@@ -120,21 +119,92 @@ class LaravelPMProvider extends ServiceProvider
                 throw new InvalidMapperException($messageMapper, MessageMapperInterface::class);
             }
 
+            /** @var ConversationMapperInterface|null $conversationMapper */
+            $conversationMapper = $app->make($mappers['conversationMapper']);
+
+            if (!$conversationMapper instanceof ConversationMapperInterface) {
+                throw new InvalidMapperException($conversationMapper, ConversationMapperInterface::class);
+            }
+
             /** @var EventService $eventService */
             $eventService = $app->make(EventService::class);
 
-            return new PMService($eventService, $messageMapper);
+            return new PMService($eventService, $messageMapper, $conversationMapper);
+        });
+
+        // PMHelper
+        $this->app->bind(PMHelper::class, function (Application $app) {
+            $moduleOptions = $this->getModuleConfig();
+            $mappers = $moduleOptions->get('mappers');
+
+            // No user mapper
+            if (!isset($mappers['userMapper'])) {
+                throw new InvalidMapperException(null, MessageMapperInterface::class);
+            }
+
+            /** @var UserMapperInterface|null $userMapper */
+            $userMapper = $app->make($mappers['userMapper']);
+
+            return new PMHelper($userMapper);
         });
 
         // Doctrine mappers
+        $this->app->bind(Mappers\DoctrineORM\ConversationMapper::class, function (Application $app) {
+            $objectManager = $app->make('Doctrine\ORM\EntityManager');
+
+            // Models
+            $moduleConfig = $this->getModuleConfig();
+            $models = $moduleConfig->get('models');
+
+            $conversationModel = $models['conversation'];
+
+            return new Mappers\DoctrineORM\ConversationMapper(
+                $objectManager,
+                $conversationModel
+            );
+        });
+
         $this->app->bind(Mappers\DoctrineORM\MessageMapper::class, function (Application $app) {
             $objectManager = $app->make('Doctrine\ORM\EntityManager');
-            return new Mappers\DoctrineORM\MessageMapper($objectManager);
+
+            // Models
+            $moduleConfig = $this->getModuleConfig();
+            $models = $moduleConfig->get('models');
+
+            $messageModel = $models['message'];
+            $conversationModel = $models['conversation'];
+            $participantModel = $models['participant'];
+
+            return new Mappers\DoctrineORM\MessageMapper(
+                $objectManager,
+                $messageModel,
+                $conversationModel,
+                $participantModel
+            );
         });
 
         $this->app->bind(Mappers\DoctrineORM\UserMapper::class, function (Application $app) {
             $objectManager = $app->make('Doctrine\ORM\EntityManager');
-            return new Mappers\DoctrineORM\UserMapper($objectManager);
+
+            // Get user model
+            $authConfig = config('auth');
+            $userModel = null;
+
+            if (!isset($authConfig['providers']['users'])) {
+                throw new InvalidConfigurationException();
+            }
+
+            if (!$authConfig['providers']['users']['driver'] == 'doctrine') {
+                throw new InvalidConfigurationException();
+            }
+
+            $userModel = $authConfig['providers']['users']['model'];
+
+            if (is_null($userModel)) {
+                throw new InvalidConfigurationException();
+            }
+
+            return new Mappers\DoctrineORM\UserMapper($objectManager, $userModel);
         });
     }
 
@@ -149,5 +219,20 @@ class LaravelPMProvider extends ServiceProvider
 
             return new PMController($pmService);
         });
+    }
+
+    /**
+     * Get module config
+     *
+     * @return ModuleOptions
+     * @throws InvalidConfigurationException
+     */
+    protected function getModuleConfig()
+    {
+        if (!$config = config('private-messaging')) {
+            throw new InvalidConfigurationException();
+        }
+
+        return new ModuleOptions($config);
     }
 }

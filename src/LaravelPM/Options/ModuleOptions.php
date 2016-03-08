@@ -18,10 +18,23 @@
 
 namespace LaravelPM\Options;
 
+use LaravelPM\Mappers\DoctrineORM;
+use LaravelPM\Models;
+
 class ModuleOptions extends Options
 {
     /** @var array */
     protected $defaults = [
+        'mappers' => [
+            'messageMapper' => DoctrineORM\MessageMapper::class,
+            'userMapper' => DoctrineORM\UserMapper::class,
+        ],
 
+        'models' => [
+            'user' => null,
+            'conversation' => Models\Conversation::class,
+            'message' => Models\Message::class,
+            'participant' => Models\Participant::class,
+        ],
     ];
 }

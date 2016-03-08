@@ -8,9 +8,21 @@
         <id name="id" type="string" length="36" column="id">
             <generator strategy="NONE" />
         </id>
-        <field name="to" type="string" length="255" />
-        <field name="author" type="string" length="255" />
         <field name="subject" type="string" length="255" />
+        <field name="updated" type="datetime"/>
         <field name="date" type="datetime"/>
+
+        <one-to-many field="participants" target-entity="LaravelPM\Models\Participant" mapped-by="conversation" />
+        
+        <one-to-many field="messages" target-entity="LaravelPM\Models\Message" mapped-by="conversation">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+
+            <order-by>
+                <order-by-field name="date" direction="DESC" />
+            </order-by>
+        </one-to-many>
     </entity>
 </doctrine-mapping>
