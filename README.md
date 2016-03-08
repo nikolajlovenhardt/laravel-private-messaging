@@ -12,4 +12,4 @@
 
 ## No documentation yet
 
-Continue to [*ØGetting started*](docs/01 Getting started.md)
+Continue to [*Getting started*](docs/01 Getting started.md)
