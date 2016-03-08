@@ -28,7 +28,7 @@ class PMController extends BaseController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * @throws \Exception
      */
-    public function read($id)
+    public function conversation($id)
     {
         $pmService = $this->pmService;
 
@@ -43,7 +43,7 @@ class PMController extends BaseController
             throw new InvalidConversationException($id);
         }
 
-        return view('pm::read', [
+        return view('pm::conversation', [
             'conversation' => $conversation,
         ]);
     }
@@ -73,27 +73,37 @@ class PMController extends BaseController
      */
     public function compose(Request $request)
     {
-        $view = view('pm.compose');
         $pmService = $this->pmService;
+        $users = $pmService->getAllUsers();
+
+        $view = view('pm::compose', [
+            'users' => $users,
+        ]);
 
         if (!$request->isMethod('post')) {
             return $view;
         }
 
-        $data = $request->all();
-
-        if ($request->has(['subject', 'message'])) {
+        if (!$request->has(['participants', 'subject', 'message'])) {
             return $view;
         }
 
-        $conversation = new Conversation();
-        $conversation->setSubject($data['subject']);
-
-        if (!$pmService->compose($conversation)) {
+        // Check for required fields
+        if (
+            empty($request->input('participants')) ||
+            empty($request->input('subject')) ||
+            empty($request->input('message'))
+        ) {
             return $view;
         }
 
-        // Success
+        if (!$conversation = $pmService->compose($request->all())) {
+            return $view;
+        }
+
+        return redirect()->route('pm.conversation', [
+            'id' => $conversation->getId(),
+        ]);
     }
 
     /**

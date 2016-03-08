@@ -50,8 +50,24 @@ interface PMServiceInterface
     /**
      * Compose new conversation
      *
-     * @param ConversationInterface $conversation
+     * @param array $data
      * @return ConversationInterface|boolean
      */
-    public function compose(ConversationInterface $conversation);
+    public function compose(array $data);
+
+    /**
+     * Check if a user is a part of a conversation
+     *
+     * @param ConversationInterface $conversation
+     * @param UserInterface $user
+     * @return boolean
+     */
+    public function isParticipant(ConversationInterface $conversation, UserInterface $user);
+
+    /**
+     * Get all users
+     *
+     * @return UserInterface[]|array
+     */
+    public function getAllUsers();
 }

@@ -13,7 +13,7 @@
         <field name="date" type="datetime"/>
 
         <one-to-many field="participants" target-entity="LaravelPM\Models\Participant" mapped-by="conversation" />
-        
+
         <one-to-many field="messages" target-entity="LaravelPM\Models\Message" mapped-by="conversation">
             <cascade>
                 <cascade-persist/>

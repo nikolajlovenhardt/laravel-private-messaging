@@ -20,7 +20,7 @@ class Message implements MessageInterface
     protected $date;
 
     /**
-     * @var string
+     * @var ConversationInterface
      */
     protected $conversation;
 
@@ -115,7 +115,7 @@ class Message implements MessageInterface
     }
 
     /**
-     * @return string
+     * @return ConversationInterface
      */
     public function getConversation()
     {
@@ -123,7 +123,7 @@ class Message implements MessageInterface
     }
 
     /**
-     * @param string $conversation
+     * @param ConversationInterface $conversation
      */
     public function setConversation($conversation)
     {

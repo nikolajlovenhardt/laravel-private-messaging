@@ -126,10 +126,17 @@ class LaravelPMProvider extends ServiceProvider
                 throw new InvalidMapperException($conversationMapper, ConversationMapperInterface::class);
             }
 
+            /** @var UserMapperInterface|null $userMapper */
+            $userMapper = $app->make($mappers['userMapper']);
+
+            if (!$userMapper instanceof UserMapperInterface) {
+                throw new InvalidMapperException($userMapper, UserMapperInterface::class);
+            }
+
             /** @var EventService $eventService */
             $eventService = $app->make(EventService::class);
 
-            return new PMService($eventService, $messageMapper, $conversationMapper);
+            return new PMService($eventService, $messageMapper, $conversationMapper, $userMapper);
         });
 
         // PMHelper
@@ -157,10 +164,12 @@ class LaravelPMProvider extends ServiceProvider
             $models = $moduleConfig->get('models');
 
             $conversationModel = $models['conversation'];
+            $participantModel = $models['participant'];
 
             return new Mappers\DoctrineORM\ConversationMapper(
                 $objectManager,
-                $conversationModel
+                $conversationModel,
+                $participantModel
             );
         });
 

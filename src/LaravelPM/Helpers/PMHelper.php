@@ -3,6 +3,7 @@
 namespace LaravelPM\Helpers;
 
 use LaravelPM\Mappers\UserMapperInterface;
+use LaravelUserNotifications\Models\UserInterface;
 
 class PMHelper
 {
@@ -23,5 +24,15 @@ class PMHelper
     public function user($id)
     {
         return $this->userMapper->find($id);
+    }
+
+    /**
+     * Get current user
+     *
+     * @return UserInterface|null
+     */
+    public function currentUser()
+    {
+        return \Auth::user();
     }
 }

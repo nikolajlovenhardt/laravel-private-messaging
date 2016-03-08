@@ -8,10 +8,11 @@
         <id name="id" type="string" length="36" column="id">
             <generator strategy="NONE" />
         </id>
+
         <field name="message" type="text" />
         <field name="date" type="datetime"/>
         <field name="user" type="string" length="255" />
-        <field name="read" type="integer" length="2" />
+        <field name="read" column="`read`" type="integer" length="2" />
 
         <many-to-one field="conversation" target-entity="LaravelPM\Models\Conversation" />
     </entity>

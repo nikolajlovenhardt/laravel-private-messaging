@@ -20,9 +20,11 @@ namespace LaravelPM\Services;
 
 use LaravelPM\Mappers\ConversationMapperInterface;
 use LaravelPM\Mappers\MessageMapperInterface;
+use LaravelPM\Mappers\UserMapperInterface;
 use LaravelPM\Models\ConversationInterface;
 use LaravelPM\Models\MessageInterface;
 use LaravelPM\Models\UserInterface;
+use PM;
 
 class PMService implements PMServiceInterface
 {
@@ -35,14 +37,19 @@ class PMService implements PMServiceInterface
     /** @var ConversationMapperInterface */
     protected $conversationMapper;
 
+    /** @var UserMapperInterface */
+    protected $userMapper;
+
     public function __construct(
         EventService $eventService,
         MessageMapperInterface $messageMapper,
-        ConversationMapperInterface $conversationMapper
+        ConversationMapperInterface $conversationMapper,
+        UserMapperInterface $userMapper
     ) {
         $this->eventService = $eventService;
         $this->messageMapper = $messageMapper;
         $this->conversationMapper = $conversationMapper;
+        $this->userMapper = $userMapper;
     }
 
     /**
@@ -75,6 +82,16 @@ class PMService implements PMServiceInterface
     }
 
     /**
+     * Find all users
+     *
+     * @return UserInterface[]
+     */
+    public function getAllUsers()
+    {
+        return $this->userMapper->findAll();
+    }
+
+    /**
      * Get user conversations
      *
      * @param UserInterface $user
@@ -98,14 +115,18 @@ class PMService implements PMServiceInterface
     /**
      * Compose new conversation
      *
-     * @param ConversationInterface $conversation
+     * @param array $data
      * @return bool|ConversationInterface
      */
-    public function compose(ConversationInterface $conversation)
+    public function compose(array $data)
     {
-        if (!$conversation = $this->messageMapper->compose($conversation)) {
+        // Create conversation
+        if (!$conversation = $this->conversationMapper->compose($data)) {
             return false;
         }
+
+        // Create message
+        $this->messageMapper->create($data['message'], PM::currentUser(), $conversation);
 
         return $conversation;
     }

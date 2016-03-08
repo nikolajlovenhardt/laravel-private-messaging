@@ -28,4 +28,9 @@ interface ConversationInterface
      * @return Participant[]|array
      */
     public function getParticipants();
+
+    /**
+     * @return MessageInterface[]|array
+     */
+    public function getMessages();
 }

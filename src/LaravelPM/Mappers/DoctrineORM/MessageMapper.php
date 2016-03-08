@@ -2,6 +2,7 @@
 
 namespace LaravelPM\Mappers\DoctrineORM;
 
+use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use LaravelPM\Mappers\MessageMapperInterface;
@@ -11,6 +12,7 @@ use LaravelPM\Models\Message;
 use LaravelPM\Models\MessageInterface;
 use LaravelPM\Models\ParticipantInterface;
 use LaravelPM\Models\UserInterface;
+use Rhumsaa\Uuid\Uuid;
 
 class MessageMapper implements MessageMapperInterface
 {
@@ -75,6 +77,29 @@ class MessageMapper implements MessageMapperInterface
     }
 
     /**
+     * Create message
+     *
+     * @param string $text
+     * @param UserInterface $user
+     * @param ConversationInterface $conversation
+     * @return MessageInterface
+     */
+    public function create($text, UserInterface $user, ConversationInterface $conversation)
+    {
+        /** @var MessageInterface $message */
+        $message = new $this->messageModel;
+
+        $message->setId(Uuid::uuid4());
+        $message->setDate(new DateTime());
+        $message->setMessage($text);
+        $message->setUser($user->getId());
+        $message->setConversation($conversation);
+        $message->setRead(0);
+
+        return $this->save($message);
+    }
+
+    /**
      * Find user conversation
      *
      * @param UserInterface $user
@@ -105,17 +130,5 @@ class MessageMapper implements MessageMapperInterface
         }
 
         return $conversations;
-    }
-
-    /**
-     * Compose new conversation
-     *
-     * @param ConversationInterface $conversationInterface
-     * @return ConversationInterface
-     */
-    public function compose(ConversationInterface $conversationInterface)
-    {
-        $this->objectManager->persist($conversationInterface);
-        return $conversationInterface;
     }
 }

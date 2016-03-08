@@ -3,8 +3,14 @@
 ?>
 <h1>Conversations</h1>
 
+<a href="{{route('pm.compose')}}" title="{{_('Compose new message')}}">
+    {{_('Compose new message')}}
+</a>
+
+<hr />
+
 @foreach($conversations as $conversation)
-    <a href="{!! route('pm.read', ['id' => $conversation->getId()]) !!}" title="Read conversation">
+    <a href="{!! route('pm.conversation', ['id' => $conversation->getId()]) !!}" title="Read conversation">
         <strong>{{$conversation->getSubject()}}</strong><br />
         Last reply: {{$conversation->getUpdated()->format('m/d/Y H:i')}}<br />
         Participants:<br >

@@ -5,8 +5,8 @@ Route::group(['prefix' => 'pm', 'as' => 'pm.', 'middleware' => 'web'], function 
     Route::get('/inbox', ['as' => 'inbox', 'uses' => 'LaravelPM\Http\Controllers\PMController@inbox']);
 
     // Read conversation
-    Route::get('/read/{conversation}', ['as' => 'read', 'uses' => 'LaravelPM\Http\Controllers\PMController@read']);
+    Route::get('/conversation/{conversation}', ['as' => 'conversation', 'uses' => 'LaravelPM\Http\Controllers\PMController@conversation']);
 
-    // Compose
+    // Compose new message
     Route::any('/compose', ['as' => 'compose', 'uses' => 'LaravelPM\Http\Controllers\PMController@compose']);
 });

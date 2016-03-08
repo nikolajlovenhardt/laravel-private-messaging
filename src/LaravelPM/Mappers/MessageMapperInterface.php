@@ -33,18 +33,20 @@ interface MessageMapperInterface
     public function remove(MessageInterface $message);
 
     /**
+     * Create new message
+     *
+     * @param string $message
+     * @param UserInterface $user
+     * @param ConversationInterface $conversation
+     * @return MessageInterface
+     */
+    public function create($message, UserInterface $user, ConversationInterface $conversation);
+
+    /**
      * Get user conversations
      *
      * @param UserInterface $user
      * @return ConversationInterface[]|array
      */
     public function getUserConversations(UserInterface $user);
-
-    /**
-     * Compose new conversation
-     *
-     * @param ConversationInterface $conversation
-     * @return ConversationInterface|boolean
-     */
-    public function compose(ConversationInterface $conversation);
 }

@@ -29,4 +29,12 @@ interface ConversationMapperInterface
      * @return boolean
      */
     public function remove(ConversationInterface $conversation);
+
+    /**
+     * Compose new conversation
+     *
+     * @param array $data
+     * @return ConversationInterface|boolean
+     */
+    public function compose(array $data);
 }
